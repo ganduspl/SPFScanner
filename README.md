@@ -1,9 +1,10 @@
 # SPFScanner
 
-**SPFScanner** is a fast and flexible Minecraft server port scanner created by @ganduspl.  
-It helps you find open Minecraft servers on any IP and port range, with colorful output and automatic result saving.
+**SPFScanner** is a fast Minecraft server port scanner created by @ganduspl.  
+it helps you find open Minecraft servers on any IP and port ranges
 
 ---
+![image](https://github.com/user-attachments/assets/1dc52adf-bcb0-48a2-938e-0908ef8f4b71)
 
 ## ✨ Features
 
@@ -12,7 +13,6 @@ It helps you find open Minecraft servers on any IP and port range, with colorful
 - Colorful terminal output (MOTD with Minecraft color codes)
 - Smart skipping of empty port ranges for faster scanning
 - Results saved automatically to the `Results/` folder with timestamp and server count
-- Graceful exit and result saving on Ctrl+C
 
 ---
 
@@ -37,7 +37,7 @@ It helps you find open Minecraft servers on any IP and port range, with colorful
 ## 📁 Output
 
 - Results are saved in the `Results/` folder.
-- Filenames include the date, time, and number of servers found, e.g.  
+- Filenames include the date, time, and number of servers found,
   `2025-05-18_20-15-30_found3_servers.txt`
 
 ---
@@ -53,15 +53,15 @@ It helps you find open Minecraft servers on any IP and port range, with colorful
 
 ```
 Scanning 127.0.0.1:25565-25575...
-Server detected: 127.0.0.1:25565 | §bSLASHMC.PL | Version: 1.20.4 | Players: 10/100
+Server detected: 127.0.0.1:25565 | MOTD | Version: 1.20.4 | Players: 10/100
 ```
 
 ---
 
 ## 📜 License
 
-Feel free to use and modify this script for educational purposes!
+feel free to use and modify this script for educational purposes!
 
 ---
 
-**Made with ❤️ by @ganduspl**
+**Made with 💖 by @ganduspl**
