@@ -16,7 +16,7 @@ it helps you find open Minecraft servers on any IP and port ranges
 
 ---
 
-## 🚀 Quick Start
+## 🚀 How to start scanning
 
 1. **Install requirements**  
    Run in your terminal:
@@ -30,11 +30,11 @@ it helps you find open Minecraft servers on any IP and port ranges
    ```
 
 3. **Follow the prompts**  
-   Enter the IP and starting port, choose scan direction, and let SPFScanner do the rest!
+   Enter the IP and starting port, choose scan direction, and let SPFScanner scan
 
 ---
 
-## 📁 Output
+## 📁 Output / Results
 
 - Results are saved in the `Results/` folder.
 - Filenames include the date, time, and number of servers found,
@@ -60,7 +60,7 @@ Server detected: 127.0.0.1:25565 | MOTD | Version: 1.20.4 | Players: 10/100
 
 ## 📜 License
 
-feel free to use and modify this script for educational purposes!
+Feel free to use and modify this script for educational purposes :D
 
 ---
 
