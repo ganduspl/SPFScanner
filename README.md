@@ -10,7 +10,7 @@ It helps you find open Minecraft servers on any IP and port ranges.
 
 - Scans any IP and port range for open Minecraft servers (Java Edition)
 - Uses [mcsrvstat.us](https://api.mcsrvstat.us/) API for reliable server info (MOTD, version, player count)
-- Colorful terminal output (MOTD with Minecraft color codes)
+- Colors terminal output (MOTD with Minecraft color codes)
 - Smart skipping of empty port ranges for faster scanning
 - Results saved automatically to the `Results/` folder with timestamp and server count
 - Full command-line support for automation (no prompts needed)
