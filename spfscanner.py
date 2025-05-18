@@ -9,6 +9,7 @@ import requests
 import json
 import datetime
 import os
+import argparse
 
 # =====================
 # script made by @ganduspl
@@ -95,13 +96,14 @@ def mc_api_status(ip, port):
     except Exception:
         return None, None, None
 
-def scan_ports(ip, start_port, direction="down", max_port=65535, step=25, delay=1):
+def scan_ports(ip, start_port, direction="up", max_port=65535, step=20, delay=1, fail_limit=4, skip_ports_val=250):
     scanner = nmap.PortScanner()
     scanned_ports = []
     skip_ports = 0
     fail_counter = 0
     port = start_port
     server_count = 0
+    reversed_once = False 
 
     #create folder for serwer results
     results_dir = "Results"
@@ -111,20 +113,36 @@ def scan_ports(ip, start_port, direction="down", max_port=65535, step=25, delay=
     now = datetime.datetime.now()
     filename = os.path.join(results_dir, now.strftime("%Y-%m-%d_%H-%M-%S") + "servers.txt")
 
-    def next_port(p, skip=0):
-        if direction == "down":
-            return min(p + step + skip, max_port)
-        else:
+    def next_port(p, skip=0, dirn=direction):
+        if dirn == "down":
             return max(p - step - skip, 1)
+        else:
+            return min(p + step + skip, max_port)
 
     try:
         with open(filename, "w", encoding="utf-8") as output_file:
-            while (port <= max_port and direction == "down") or (port > 0 and direction != "down"):
+            while True:
+                #if reach the bootom or top of the range 
+                if direction == "up" and port > max_port and not reversed_once:
+                    direction = "down"
+                    port = start_port
+                    reversed_once = True
+                    print(f"{Fore.LIGHTYELLOW_EX}Reached the top. Reversing direction to DOWN from port {start_port}.{Style.RESET_ALL}")
+                    continue
+                elif direction == "down" and port < 1 and not reversed_once:
+                    direction = "up"
+                    port = start_port
+                    reversed_once = True
+                    print(f"{Fore.LIGHTYELLOW_EX}Reached the bottom. Reversing direction to UP from port {start_port}.{Style.RESET_ALL}")
+                    continue
+                elif reversed_once and ((direction == "up" and port > max_port) or (direction == "down" and port < 1)):
+                    break  #end the scan if we reach the limits again
+
                 if skip_ports > 0:
-                    port = next_port(port, skip_ports)
+                    port = next_port(port, skip_ports, direction)
                     skip_ports = 0
 
-                if direction == "down":
+                if direction == "up":
                     end_port = min(port + step - 1, max_port)
                 else:
                     end_port = max(port - step + 1, 1)
@@ -144,7 +162,7 @@ def scan_ports(ip, start_port, direction="down", max_port=65535, step=25, delay=
                                     motd_colored, motd_clean, info = mc_api_status(ip, p)
                                     if motd_colored:
                                         found_server = True
-                                        server_count += 1  #counting serers thats work
+                                        server_count += 1
                                         print(f"{Fore.WHITE}Server detected: {Fore.LIGHTCYAN_EX}{ip}:{p}{Fore.WHITE} | {motd_colored} {Fore.WHITE}|{Fore.WHITE} {info}{Style.RESET_ALL}")
                                         output_file.write(f"{ip}:{p} | {motd_clean} | {strip_ansi(info)}\n")
                                     else:
@@ -157,12 +175,12 @@ def scan_ports(ip, start_port, direction="down", max_port=65535, step=25, delay=
                     fail_counter = 0
                 else:
                     fail_counter += 1
-                    if fail_counter >= 3:
-                        print(f"{Fore.WHITE}No servers found in 3 consecutive scans. Skipping 500 ports...{Style.RESET_ALL}")
-                        skip_ports = 500
+                    if fail_counter >= fail_limit:
+                        print(f"{Fore.WHITE}No servers found in {fail_limit} consecutive scans. Skipping {skip_ports_val} ports...{Style.RESET_ALL}")
+                        skip_ports = skip_ports_val
                         fail_counter = 0
 
-                port = next_port(port)
+                port = next_port(port, dirn=direction)
                 time.sleep(delay)
     except KeyboardInterrupt:
         print(f"\n{Fore.LIGHTRED_EX}Scan interrupted by user (Ctrl+C). Saving results...{Style.RESET_ALL}")
@@ -175,25 +193,72 @@ def scan_ports(ip, start_port, direction="down", max_port=65535, step=25, delay=
     os.rename(filename, new_filename)
     print(f"\n{Fore.LIGHTCYAN_EX}Results saved to: {Fore.WHITE}{new_filename}{Style.RESET_ALL}")
 
-# =====================
-# all inputs for starts
-# =====================
-address = input(f"Enter IP address with port {Fore.BLUE}( {Fore.LIGHTCYAN_EX}e.g. 0.0.0.0:25557{Fore.BLUE} ){Style.RESET_ALL} : ")
-if ':' not in address:
-    print("Invalid format. Required format is IP:PORT.")
-    exit()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Minecraft Server Port Scanner by @ganduspl",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("-a", "--address", type=str, help="IP address with port, e.g. 1.2.3.4:25565")
+    parser.add_argument("-d", "--direction", choices=["u", "d"], default="u", help="Scan direction: up (u) or down (d)")
+    parser.add_argument("--fail-limit", type=int, default=4, help="How many fails before skipping")
+    parser.add_argument("--skip-ports", type=int, default=250, help="How many ports to skip after fails")
+    parser.add_argument("--step", type=int, default=20, help="Step size for port scanning")
+    parser.add_argument("--delay", type=float, default=1, help="Delay between scans (seconds)")
+    parser.add_argument("--max-port", type=int, default=65535, help="Maximum port to scan")
 
-ip, port_str = address.split(':')
-try:
-    start_port = int(port_str)
-except ValueError:
-    print("Port must be an integer.")
-    exit()
+    args = parser.parse_args()
 
-#scanning direction ;o
-direction_input = input("Scan up (+25) or down (-25)? (u/d): ").strip().lower()
-if direction_input not in ["u", "d"]:
-    print("Invalid choice. Use 'u' or 'd'.")
-    exit()
+    if args.address:
+        if ':' not in args.address:
+            print("Invalid format. Required format is IP:PORT.")
+            exit()
+        ip, port_str = args.address.split(':')
+        try:
+            start_port = int(port_str)
+        except ValueError:
+            print("Port must be an integer.")
+            exit()
+        direction = "up" if args.direction == "u" else "down"
+        scan_ports(
+            ip, start_port,
+            direction=direction,
+            max_port=args.max_port,
+            step=args.step,
+            delay=args.delay,
+            fail_limit=args.fail_limit,
+            skip_ports_val=args.skip_ports
+        )
+    else:
+        # =====================
+        # all inputs for starts
+        # =====================
+        address = input(f"{Fore.WHITE}Enter IP address with port {Fore.BLUE}( {Fore.LIGHTCYAN_EX}e.g. 0.0.0.0:25557{Fore.BLUE} ){Fore.WHITE} : ")
+        if ':' not in address:
+            print("Invalid format. Required format is IP:PORT.")
+            exit()
 
-scan_ports(ip, start_port, direction="down" if direction_input == "d" else "up")
+        ip, port_str = address.split(':')
+        try:
+            start_port = int(port_str)
+        except ValueError:
+            print("Port must be an integer.")
+            exit()
+
+        direction_input = input(f"{Fore.WHITE}Scan up (+25) or down (-25)? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}u/d default: u{Fore.BLUE} ) {Fore.WHITE}: ").strip().lower()
+        if direction_input not in ["u", "d", ""]:
+            print(f"{Fore.WHITE}Invalid choice. Use 'u', 'd' or leave empty for default (up).")
+            exit()
+        direction = "up" if direction_input in ["u", ""] else "down"
+
+        fail_limit_input = input(f"{Fore.WHITE}How many fails before skipping? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}default: 4{Fore.BLUE} ) {Fore.WHITE}: ").strip()
+        skip_ports_input = input(f"{Fore.WHITE}How many ports to skip after fails? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}default: 25{Fore.BLUE} ) {Fore.WHITE}: ").strip()
+        try:
+            fail_limit = int(fail_limit_input) if fail_limit_input else 4
+        except ValueError:
+            fail_limit = 4
+        try:
+            skip_ports_val = int(skip_ports_input) if skip_ports_input else 250
+        except ValueError:
+            skip_ports_val = 250
+
+        scan_ports(ip, start_port, direction=direction, fail_limit=fail_limit, skip_ports_val=skip_ports_val)
