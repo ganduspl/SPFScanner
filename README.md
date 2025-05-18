@@ -14,7 +14,7 @@ It helps you find open Minecraft servers on any IP and port ranges.
 - Smart skipping of empty port ranges for faster scanning
 - Results saved automatically to the `Results/` folder with timestamp and server count
 - Full command-line support for automation (no prompts needed)
-- Customizable scan direction, step size, skip logic, and more
+- Customiable scan direction, step size, skip logic, and more
 
 ---
 
@@ -33,11 +33,10 @@ It helps you find open Minecraft servers on any IP and port ranges.
    Follow the prompts: enter the IP and starting port, choose scan direction, and let SPFScanner scan.
 
 3. **Run the scanner (command-line mode)**  
-   You can provide all options directly:
    ```
    python spfscanner.py -a 127.0.0.1:25565 -d u --fail-limit 4 --skip-ports 250 --step 20 --delay 1 --max-port 65535
    ```
-   **Available arguments:**
+   **Available commands:**
    - `-a`, `--address` – IP address with starting port, e.g. `1.2.3.4:25565`
    - `-d`, `--direction` – scan direction: `u` (up) or `d` (down)
    - `--fail-limit` – how many fails before skipping ports
@@ -50,8 +49,8 @@ It helps you find open Minecraft servers on any IP and port ranges.
 
 ## 📁 Output / Results
 
-- Results are saved in the `Results/` folder.
-- Filenames include the date, time, and number of servers found,  
+- Results are saved in the `Results/` folder
+- Filenames include the date, time, and number of servers found
   e.g. `2025-05-18_20-15-30_found3_servers.txt`
 
 ---
