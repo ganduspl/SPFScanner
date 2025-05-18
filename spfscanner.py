@@ -49,7 +49,7 @@ ascii_art = f"""{Fore.LIGHTCYAN_EX}
  ██      ██   ██ ██      ██      ██      ██   ██ ████   ██ ████   ██ ██      ██   ██ 
  {Fore.CYAN}███████ ██████  █████   ███████ ██      ███████ ██ ██  ██ ██ ██  ██ █████   ██████  
      {Fore.LIGHTBLUE_EX} ██ ██      ██           ██ ██      ██   ██ ██  ██ ██ ██  ██ ██ ██      ██   ██ 
- {Fore.BLUE}███████ ██      ██      ███████  ██████ ██   ██ ██   ██ ██   ████ ██   ████ ███████ ██   ██  
+ {Fore.BLUE}███████ ██      ██      ███████  ██████ ██   ██ ██     ██ ██   ████ ██████  ██   ██  
 {Style.RESET_ALL}"""
 
 title = f"{Fore.LIGHTCYAN_EX}Server{Fore.CYAN}Port{Fore.LIGHTBLUE_EX}Finder {Fore.WHITE}Minecraft Scanner{Style.RESET_ALL}"
