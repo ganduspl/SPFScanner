@@ -251,7 +251,7 @@ if __name__ == "__main__":
         direction = "up" if direction_input in ["u", ""] else "down"
 
         fail_limit_input = input(f"{Fore.WHITE}How many fails before skipping? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}default: 4{Fore.BLUE} ) {Fore.WHITE}: ").strip()
-        skip_ports_input = input(f"{Fore.WHITE}How many ports to skip after fails? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}default: 25{Fore.BLUE} ) {Fore.WHITE}: ").strip()
+        skip_ports_input = input(f"{Fore.WHITE}How many ports to skip after fails? {Fore.BLUE}( {Fore.LIGHTCYAN_EX}default: 250{Fore.BLUE} ) {Fore.WHITE}: ").strip()
         try:
             fail_limit = int(fail_limit_input) if fail_limit_input else 4
         except ValueError:
