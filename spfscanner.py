@@ -52,7 +52,7 @@ ascii_art = f"""{Fore.LIGHTCYAN_EX}
  {Fore.BLUE}███████ ██      ██      ███████  ██████ ██   ██ ██   ██ ██   ████ ██   ████ ███████ ██   ██  
 {Style.RESET_ALL}"""
 
-title = f"{Fore.LIGHTCYAN_EX}Server{Fore.CYAN}Port{Fore.LIGHTBLUE_EX}Finder {Fore.WHITE}MC Scanner{Style.RESET_ALL}"
+title = f"{Fore.LIGHTCYAN_EX}Server{Fore.CYAN}Port{Fore.LIGHTBLUE_EX}Finder {Fore.WHITE}Minecraft Scanner{Style.RESET_ALL}"
 author = f"{Fore.WHITE}( by {Fore.LIGHTCYAN_EX}@ganduspl{Fore.WHITE} ){Style.RESET_ALL}"
 
 print(ascii_art)
